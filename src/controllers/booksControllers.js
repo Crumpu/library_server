@@ -93,4 +93,4 @@ class BooksControllers {
   }
 }
 
-module.exports = new CustomersControllers();
+module.exports = new BooksControllers();
