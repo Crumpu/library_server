@@ -1,0 +1,36 @@
+#getBooks
+GET http://127.0.0.1:5000/books
+
+###
+# getBookById 
+
+GET http://127.0.0.1:5000/books/3
+
+### 
+# createBook
+POST http://127.0.0.1:5000/books HTTP/1.1
+Content-Type: application/json
+
+{
+  "title": "Самый богатый человек в Вавилоне",
+  "description": null,
+  "genre_id": "Miphology",
+  "shelf_id": "Shelf #6"
+}
+
+### 
+# updateBook
+PUT http://127.0.0.1:5000/books HTTP/1.1
+Content-Type: application/json
+
+ {
+  "id": 35,
+  "title": "Голодные игры",
+  "description": null,
+  "genre_id": "Fantazy",
+  "shelf_id": "Shelf #6"
+}
+
+###
+# deleteBook
+DELETE http://127.0.0.1:5000/books/32

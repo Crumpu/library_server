@@ -4,13 +4,13 @@ class BooksControllers {
   async getBooks(req, res) {
     try {
       const books = await db.query(
-        `SELECT title, genres.title shelves.title, description, createdAt, updatedAt, image 
+        `SELECT books.id, books.title, books.description, genres.title AS genres, shelves.title AS shelves, image, books."createdAt", books."updatedAt"
         FROM books
         JOIN genres ON books.genre_id = genres.id
         JOIN shelves ON books.shelf_id = shelves.id
-        ORDER BY title`
+        ORDER BY books.id`
       );
-      console.log(books);
+      console.log(books.rows);
       res.json(books.rows);
     } catch (error) {
       console.log(error);
@@ -24,13 +24,18 @@ class BooksControllers {
       } = req;
       const book = await db.query(
         `
-        SELECT id, title, genres.title shelves.title, description, createdAt, updatedAt, image 
+        SELECT books.id, books.title, books.description, genres.title AS genres, shelves.title AS shelves, image, books."createdAt", books."updatedAt"
         FROM books
         JOIN genres ON books.genre_id = genres.id
         JOIN shelves ON books.shelf_id = shelves.id
-        WHERE id=$1`,
+        WHERE books.id=$1`,
         [id]
       );
+      if (book.rows.length > 0) {
+        res.json(book.rows[0]);
+      } else {
+        res.status(404).send("Book not found");
+      }
     } catch (error) {
       console.log(error);
     }
@@ -38,15 +43,25 @@ class BooksControllers {
 
   async createBook(req, res) {
     try {
-      const { full_name, email, phone, createdAt, updatedAt, password } =
-        req.body;
+      const createdAt = new Date().toISOString()
+      const {
+        title,
+        genre_id,
+        shelf_id,
+        description,
+        image,
+      } = req.body;
+      console.log(req.body);
       const newBook = await db.query(
-        `INSERT INTO books(title, genre_id, shelf_id, description, createdAt, updatedAt, image)
+        `INSERT INTO books(title, genre_id, shelf_id, description, "createdAt", image)
         VALUES 
-        ($1, (SELECT id FROM genres WHERE title=$2), (SELECT id FROM shelves WHERE title=$3), $4, $5, $6, $7)
-        `, [title, genre_id, shelf_id, description, createdAt, updatedAt, image]
+        ($1, (SELECT genres.id FROM genres WHERE genres.title=$2), (SELECT shelves.id FROM shelves WHERE shelves.title=$3), $4, $5, $6)
+        RETURNING *`,
+        [title, genre_id, shelf_id, description, createdAt, image]
       );
-      res.json(newBook.rows)
+      if (newBook.rows.length > 0) {
+        res.json(newBook.rows[0]);
+      }
     } catch (error) {
       console.log(error);
     }
@@ -54,17 +69,31 @@ class BooksControllers {
 
   async updateBook(req, res) {
     try {
-      const { title, genre_id, shelf_id, description, createdAt, updatedAt, image, id } =
+      const { title, genre_id, shelf_id, description, createdAt, image, id } =
         req.body;
-      const updatedBook= await db.query(
+      const updatedAt = new Date().toISOString();
+      const updatedBook = await db.query(
         `
         UPDATE books 
-        SET title=$1, genre_id=(SELECT id FROM genres WHERE title=$2), shelf_id=(SELECT id FROM shelves WHERE title=$3), description=$4, createdAt=$5, updatedAt=$6, image=$7
-        WHERE id=$8
+        SET title=$1, genre_id=(SELECT id FROM genres WHERE title=$2), shelf_id=(SELECT id FROM shelves WHERE title=$3), description=$4, "updatedAt"=$5, image=$6
+        WHERE id=$7
         RETURNING *`,
-        [title, genre_id, shelf_id, description, createdAt, updatedAt, image, id]
+        [
+          title,
+          genre_id,
+          shelf_id,
+          description,
+          updatedAt,
+          image,
+          id,
+        ]
       );
-      res.json(...updatedBook.rows);
+      if (updatedBook.rows.length > 0) {
+        console.log(updatedBook.rows[0]);
+        res.json(updatedBook.rows[0]);
+      } else {
+        res.status(404).send("Book not found");
+      }
     } catch (error) {
       console.log(error);
     }
@@ -82,10 +111,10 @@ class BooksControllers {
         RETURNING id, title`,
         [id]
       );
-      if(deletedBook.rows.length > 0)
+      if (deletedBook.rows.length > 0) {
         res.json(deletedBook.rows);
-      else{
-        res.status(404).send('Book not found')
+      } else {
+        res.status(404).send("Book not found");
       }
     } catch (error) {
       console.log(error);
