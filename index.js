@@ -9,5 +9,5 @@ const PORT = process.env.PORT;
 const server = http.createServer(app); 
 
 server.listen(PORT, HOST_NAME, () => { 
-  console.log(`Server is running at http://${HOST_NAME}:${PORT}/`) 
+  console.log(`Server is running at http://${HOST_NAME}:${PORT}`) 
 })

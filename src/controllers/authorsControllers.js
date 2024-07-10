@@ -4,10 +4,11 @@ class AuthorControllers {
   async getAuthors(req, res) {
     try {
       const authors = await db.query(
-        `SELECT id, full_name, email, nationalities.title, createdAt, updatedAt FROM authors
+        `SELECT authors.id, full_name, email, nationalities.title, authors."createdAt", authors."updatedAt" FROM authors
         JOIN nationalities ON authors.nationality_id = nationalities.id
-        ORDER BY full_name`
+        ORDER BY authors.id`
       );
+      console.log(authors.rows);
       res.json(authors.rows);
     } catch (error) {
       console.log(error);
@@ -20,12 +21,16 @@ class AuthorControllers {
         params: { id },
       } = req;
       const author = await db.query(
-        `
-        SELECT id, full_name, email, nationalities.title, createdAt, updatedAt FROM authors
+        `SELECT authors.id, full_name, email, nationalities.title, authors."createdAt", authors."updatedAt" FROM authors
         JOIN nationalities ON authors.nationality_id = nationalities.id
-        WHERE id=$1`,
+        WHERE authors.id=$1`,
         [id]
       );
+      if (author.rows.length > 0) {
+        res.json(author.rows);
+      } else {
+        res.status(404).send("Author not found");
+      }
     } catch (error) {
       console.log(error);
     }
@@ -36,13 +41,13 @@ class AuthorControllers {
       const { full_name, email, nationality_id, createdAt, updatedAt } =
         req.body;
       const newAuthor = await db.query(
-        `INSERT INTO authors(full_name, email, nationality_id, createdAt, updatedAt)
+        `INSERT INTO authors(full_name, email, nationality_id, "createdAt", "updatedAt")
         VALUES 
         ($1, $2, (SELECT id FROM nationalities WHERE title=$3), $4, $5)
         RETURNING *`,
         [full_name, email, nationality_id, createdAt, updatedAt]
       );
-      res.json(newAuthor.rows);
+      res.json(newAuthor.rows[0]);
     } catch (error) {
       console.log(error);
     }
@@ -50,16 +55,20 @@ class AuthorControllers {
 
   async updateAuthor(req, res) {
     try {
-      const {full_name, email, nationality_id, createdAt, updatedAt, id} = req.body;
+      const { full_name, email, nationality_id, createdAt, updatedAt, id } =
+        req.body;
+      console.log(full_name)
       const updatedAuthor = await db.query(
         `UPDATE authors 
         SET 
-        full_name=$1, email=$2, nationality_id=(SELECT id FROM nationalities WHERE title=$3), createdAt=$4, updatedAt=$5
-        WHERE id=$6`, [full_name, email, nationality_id, createdAt, updatedAt, id]
+        full_name=$1, email=$2, nationality_id=(SELECT id FROM nationalities WHERE title=$3), "createdAt"=$4, "updatedAt"=$5
+        WHERE id=$6
+        RETURNING *`,
+        [full_name, email, nationality_id, createdAt, updatedAt, id]
       );
-      res.json(...updatedAuthor.rows)
-    }
-    catch (error) {
+      console.log(updatedAuthor);
+      res.json(...updatedAuthor.rows);
+    } catch (error) {
       console.log(error);
     }
   }
@@ -73,16 +82,14 @@ class AuthorControllers {
         `DELETE FROM authors WHERE id=$1 RETURNING id, full_name`,
         [id]
       );
-      if(deletedAuthor.rows.length > 0)
-        res.json(deletedAuthor.rows);
-      else{
-        res.status(404).send('Author not found')
+      if (deletedAuthor.rows.length > 0) res.json(deletedAuthor.rows[0]);
+      else {
+        res.status(404).send("Author not found");
       }
     } catch (error) {
       console.log(error);
     }
   }
-
 }
 
 module.exports = new AuthorControllers();
