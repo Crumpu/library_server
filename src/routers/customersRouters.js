@@ -1,14 +1,16 @@
-const { Router } = require("express")
+const { Router } = require("express");
 // ==================================
-const booksControllers = require("../controllers/customersControllers")
-const router = new Router(); 
+const customersControllers = require("../controllers/customersControllers");
+const router = new Router();
 
-router 
+router
   .route("/")
-  .get(booksControllers.getCustomers)
-//   .post(booksControllers.createCustomer)
-//   .put(booksControllers.updateCustomer);
-// router 
-//   .route("/:id")
-//   .get(booksControllers.getCustomersById)
-//   .delete(booksControllers.deleteCustomer);
+  .get(customersControllers.getCustomers)
+  .post(customersControllers.createCustomer)
+  .put(customersControllers.updateCustomer)
+router.route("/:id")
+  .get(customersControllers.getCustomersById)
+  .delete(customersControllers.deleteCustomer)
+
+
+module.exports = router;

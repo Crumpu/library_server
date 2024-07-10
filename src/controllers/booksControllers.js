@@ -51,7 +51,6 @@ class BooksControllers {
         description,
         image,
       } = req.body;
-      console.log(req.body);
       const newBook = await db.query(
         `INSERT INTO books(title, genre_id, shelf_id, description, "createdAt", image)
         VALUES 
@@ -69,7 +68,7 @@ class BooksControllers {
 
   async updateBook(req, res) {
     try {
-      const { title, genre_id, shelf_id, description, createdAt, image, id } =
+      const { title, genre_id, shelf_id, description, image, id } =
         req.body;
       const updatedAt = new Date().toISOString();
       const updatedBook = await db.query(
