@@ -24,7 +24,7 @@ PUT http://127.0.0.1:5000/books HTTP/1.1
 Content-Type: application/json
 
  {
-  "id": 35,
+  "id": 23,
   "title": "Голодные игры",
   "description": null,
   "genre_id": "Fantazy",
@@ -33,4 +33,4 @@ Content-Type: application/json
 
 ###
 # deleteBook
-DELETE http://127.0.0.1:5000/books/32
+DELETE http://127.0.0.1:5000/books/23

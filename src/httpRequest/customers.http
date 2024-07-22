@@ -4,7 +4,7 @@ GET http://127.0.0.1:5000/customers
 ###
 # getCustomerById 
 
-GET http://127.0.0.1:5000/customers/3
+GET http://127.0.0.1:5000/customers/1
 
 ### 
 # createCustomer
@@ -24,14 +24,14 @@ PUT http://127.0.0.1:5000/customers HTTP/1.1
 Content-Type: application/json
 
 {
-    "id": 2,
+    "id": 1,
     "full_name": "Cavin McCalister",
     "email": "cmcc@gmail.com",
-    "phone": 38066000, 
+    "phone": 380660000000, 
     "password": "password"
 }
 
 
 ###
 # deleteCustomer
-DELETE http://127.0.0.1:5000/customers/13
+DELETE http://127.0.0.1:5000/customers/8

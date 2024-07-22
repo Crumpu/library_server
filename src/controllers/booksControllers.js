@@ -10,10 +10,15 @@ class BooksControllers {
         JOIN shelves ON books.shelf_id = shelves.id
         ORDER BY books.id`
       );
-      console.log(books.rows);
-      res.json(books.rows);
+      if (books.rows.length > 0) {
+        res.json(books.rows);
+      } else {
+        res
+          .status(404)
+          .send(`Books can't be getting, error is: ${error.message}`);
+      }
     } catch (error) {
-      console.log(error);
+      res.status(500).send(`Books can't getting, error is: ${error.message}`);
     }
   }
 
@@ -34,23 +39,20 @@ class BooksControllers {
       if (book.rows.length > 0) {
         res.json(book.rows[0]);
       } else {
-        res.status(404).send("Book not found");
+        res
+          .status(404)
+          .send(`Book can't be getting, error is: ${error.message}`);
       }
     } catch (error) {
-      console.log(error);
+      res.status(500).send(`Book can't getting, error is: ${error.message}`);
     }
   }
 
+
   async createBook(req, res) {
     try {
-      const createdAt = new Date().toISOString()
-      const {
-        title,
-        genre_id,
-        shelf_id,
-        description,
-        image,
-      } = req.body;
+      const createdAt = new Date().toISOString();
+      const { title, genre_id, shelf_id, description, image } = req.body;
       const newBook = await db.query(
         `INSERT INTO books(title, genre_id, shelf_id, description, "createdAt", image)
         VALUES 
@@ -60,16 +62,19 @@ class BooksControllers {
       );
       if (newBook.rows.length > 0) {
         res.json(newBook.rows[0]);
+      } else {
+        res
+          .status(404)
+          .send(`Book can't be created, error is: ${error.message}`);
       }
     } catch (error) {
-      console.log(error);
+      res.status(500).send(`Book can't created, error is: ${error.message}`);
     }
   }
 
   async updateBook(req, res) {
     try {
-      const { title, genre_id, shelf_id, description, image, id } =
-        req.body;
+      const { title, genre_id, shelf_id, description, image, id } = req.body;
       const updatedAt = new Date().toISOString();
       const updatedBook = await db.query(
         `
@@ -77,24 +82,17 @@ class BooksControllers {
         SET title=$1, genre_id=(SELECT id FROM genres WHERE title=$2), shelf_id=(SELECT id FROM shelves WHERE title=$3), description=$4, "updatedAt"=$5, image=$6
         WHERE id=$7
         RETURNING *`,
-        [
-          title,
-          genre_id,
-          shelf_id,
-          description,
-          updatedAt,
-          image,
-          id,
-        ]
+        [title, genre_id, shelf_id, description, updatedAt, image, id]
       );
       if (updatedBook.rows.length > 0) {
-        console.log(updatedBook.rows[0]);
         res.json(updatedBook.rows[0]);
       } else {
-        res.status(404).send("Book not found");
+        res
+          .status(404)
+          .send(`Book can't be updated, error is: ${error.message}`);
       }
     } catch (error) {
-      console.log(error);
+      res.status(500).send(`Book can't updated, error is: ${error.message}`);
     }
   }
 
@@ -111,12 +109,14 @@ class BooksControllers {
         [id]
       );
       if (deletedBook.rows.length > 0) {
-        res.json(deletedBook.rows);
+        res.json(deletedBook.rows[0]);
       } else {
-        res.status(404).send("Book not found");
+        res
+          .status(404)
+          .send(`Book can't be deleted, error is: ${error.message}`);
       }
     } catch (error) {
-      console.log(error);
+      res.status(500).send(`Book can't deleted, error is: ${error.message}`);
     }
   }
 }

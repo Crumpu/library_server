@@ -10,13 +10,16 @@ class CustomersControllers {
         ORDER BY id`
       );
       if (customers.rows.length > 0) {
-        console.log(customers.rows);
         res.json(customers.rows);
       } else {
-        res.status(404).send("Customers not found");
+        res
+          .status(404)
+          .send(`Customers can't be getting, error is: ${error.message}`);
       }
     } catch (error) {
-      res.status(500).send("Internal Server Error");
+      res
+        .status(500)
+        .send(`Customers can't getting, error is: ${error.message}`);
     }
   }
 
@@ -34,11 +37,18 @@ class CustomersControllers {
       );
       if (customer.rows.length > 0) {
         res.json(customer.rows[0]);
+      } else {
+        res
+          .status(404)
+          .send(`Customer can't be getting, error is: ${error.message}`);
       }
     } catch (error) {
-      res.status(500).send("Internal Server Error");
+      res
+        .status(500)
+        .send(`Customer can't getting, error is: ${error.message}`);
     }
   }
+
 
   // POST  create customer
   async createCustomer(req, res) {
@@ -55,13 +65,17 @@ class CustomersControllers {
       if (newCustomer.rows.length > 0) {
         res.json(newCustomer.rows[0]);
       } else {
-        res.status(404).send("Customer not found");
+        res
+          .status(404)
+          .send(`Customer can't be created, error is: ${error.message}`);
       }
     } catch (error) {
-      console.log(error.message);
-      res.status(500).send("Internal Server Error");
+      res
+        .status(500)
+        .send(`Customer can't created, error is: ${error.message}`);
     }
   }
+
 
   // PUT update customer
   async updateCustomer(req, res) {
@@ -79,22 +93,24 @@ class CustomersControllers {
       if (updatedCustomer.rows.length > 0) {
         res.json(updatedCustomer.rows[0]);
       } else {
-        res.status(404).send("Customer not found");
+        res
+          .status(404)
+          .send(`Customer can't be updated, error is: ${error.message}`);
       }
     } catch (error) {
-      console.log(error.message);
-      res.status(500).send("Internal Server Error");
+      res
+        .status(500)
+        .send(`Customer can't updated, error is: ${error.message}`);
     }
   }
 
   // DELETE delete customer
 
   async deleteCustomer(req, res) {
-  
     try {
-        const {
-          params: { id },
-        } = req;
+      const {
+        params: { id },
+      } = req;
       const deletedCustomer = await db.query(
         `DELETE FROM customers 
         WHERE id=$1
@@ -102,16 +118,17 @@ class CustomersControllers {
         [id]
       );
       if (deletedCustomer.rows.length > 0) {
-        res.json(deletedCustomer.rows);
+        res.json(deletedCustomer.rows[0]);
       } else {
-        res.status(404).send("Customer not found");
+        res
+          .status(404)
+          .send(`Customer can't be deleted, error is: ${error.message}`);
       }
     } catch (error) {
-      console.log(error.message);
-      console.log(error.message)
-      res.status(500).send("Internal Server Error");
+      res
+        .status(500)
+        .send(`Customer can't deleted, error is: ${error.message}`);
     }
   }
 }
-
 module.exports = new CustomersControllers();

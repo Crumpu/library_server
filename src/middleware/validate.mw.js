@@ -2,27 +2,41 @@ const {
   CUSTOMER_VALIDATION_SCHEMA,
   AUTHOR_VALIDATION_SCHEMA,
   BOOK_VALIDATION_SCHEMA,
+  GENERAL_CONSTRAINT,
+  CONSTRAINT_FOR_HUMAN,
 } = require("../utils/validationSchemas");
 
 const validateAuthor = async (req, res, next) => {
   const { body } = req;
+  const COMBINED_AUTHOR_VALIDATION_SCHEMA =
+    AUTHOR_VALIDATION_SCHEMA.concat(GENERAL_CONSTRAINT).concat(
+      CONSTRAINT_FOR_HUMAN
+    );
   try {
-    const validatedAuthor = await AUTHOR_VALIDATION_SCHEMA.validate(body, {
-      abortEarly: false,
-    });
+    const validatedAuthor = await COMBINED_AUTHOR_VALIDATION_SCHEMA.validate(
+      body,
+      {
+        abortEarly: false,
+      }
+    );
     req.body = validatedAuthor;
     next();
   } catch (error) {
-    next(`Error is: ${error.errors}`)
+    next(`Error is: ${error.errors}`);
   }
 };
 
 const validateCustomer = async (req, res, next) => {
   const { body } = req;
+  const COMBINED_CUSTOMER_VALIDATION_SCHEMA =
+    CUSTOMER_VALIDATION_SCHEMA.concat(GENERAL_CONSTRAINT).concat(
+      CONSTRAINT_FOR_HUMAN
+    );
   try {
-    const validatedCustomer = await CUSTOMER_VALIDATION_SCHEMA.validate(body, {
-      abortEarly: false,
-    });
+    const validatedCustomer =
+      await COMBINED_CUSTOMER_VALIDATION_SCHEMA.validate(body, {
+        abortEarly: false,
+      });
     req.body = validatedCustomer;
     next();
   } catch (error) {
@@ -32,8 +46,10 @@ const validateCustomer = async (req, res, next) => {
 
 const validateBook = async (req, res, next) => {
   const { body } = req;
+  const COMBINED_BOOK_VALIDATION_SCHEMA =
+    BOOK_VALIDATION_SCHEMA.concat(GENERAL_CONSTRAINT);
   try {
-    const validatedBook = await BOOK_VALIDATION_SCHEMA.validate(body, {
+    const validatedBook = await COMBINED_BOOK_VALIDATION_SCHEMA.validate(body, {
       abortEarly: false,
     });
     req.body = validatedBook;
@@ -45,6 +61,6 @@ const validateBook = async (req, res, next) => {
 
 module.exports = {
   validateAuthor,
-validateCustomer,
-validateBook
-}
+  validateCustomer,
+  validateBook,
+};
