@@ -9,13 +9,13 @@ const CUSTOMER_VALIDATION_SCHEMA = yup.object().shape({
 });
 
 const AUTHOR_VALIDATION_SCHEMA = yup.object().shape({
-  nationality_id: yup.string(),
+  nationality: yup.string(),
 });
 
 const BOOK_VALIDATION_SCHEMA = yup.object().shape({
   title: yup.string().required(),
-  genre_id: yup.string().required(),
-  shelf_id: yup.string().required(),
+  genre: yup.string().required(),
+  shelf: yup.string().required(),
   description: yup.string().nullable(),
 });
 

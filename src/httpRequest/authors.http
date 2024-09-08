@@ -2,9 +2,9 @@
 GET http://127.0.0.1:5000/authors
 
 ###
-# getAuthorById 
+# getAuthorById  authors."updatedAt"
 
-GET http://127.0.0.1:5000/authors/2
+GET http://127.0.0.1:5000/authors/21
 
 ### 
 # createAuthor
@@ -12,9 +12,9 @@ POST http://127.0.0.1:5000/authors HTTP/1.1
 Content-Type: application/json
 
   {
-    "full_name": "Ivan Franko",
-    "email": "i-f@gmail.com",
-    "nationality_id": "UA"
+    "full_name": "Ivan_Franko",
+    "email": "1i-f@gmail.com",
+    "nationality": "UA"
   }
 
 ### 
@@ -25,10 +25,10 @@ Content-Type: application/json
   {
     "full_name": "Ivan Franko",
     "email": "ivfr@gmail.com",
-    "nationality_id": "UA",
-    "id": 25
+    "nationality": "UA",
+    "id": 24
   }
 
 ###
 # deleteAuthor
-DELETE http://127.0.0.1:5000/authors/20
+DELETE http://127.0.0.1:5000/authors/22

@@ -4,7 +4,7 @@ class BooksControllers {
   async getBooks(req, res) {
     try {
       const books = await db.query(
-        `SELECT books.id, books.title, books.description, genres.title AS genres, shelves.title AS shelves, image, books."createdAt", books."updatedAt"
+        `SELECT books.id, books.title, books.description, genres.title AS genres, shelves.title AS shelves, image, books."created_at", books."updated_at"
         FROM books
         JOIN genres ON books.genre_id = genres.id
         JOIN shelves ON books.shelf_id = shelves.id
@@ -29,7 +29,7 @@ class BooksControllers {
       } = req;
       const book = await db.query(
         `
-        SELECT books.id, books.title, books.description, genres.title AS genres, shelves.title AS shelves, image, books."createdAt", books."updatedAt"
+        SELECT books.id, books.title, books.description, genres.title AS genres, shelves.title AS shelves, image, books."created_at", books."updated_at"
         FROM books
         JOIN genres ON books.genre_id = genres.id
         JOIN shelves ON books.shelf_id = shelves.id
@@ -48,21 +48,21 @@ class BooksControllers {
     }
   }
 
-
   async createBook(req, res) {
     try {
-      const createdAt = new Date().toISOString();
-      const { title, genre_id, shelf_id, description, image } = req.body;
+      const created_at = new Date().toISOString();
+      const { title, genre, shelf, description, image } = req.body;
       const newBook = await db.query(
-        `INSERT INTO books(title, genre_id, shelf_id, description, "createdAt", image)
+        `INSERT INTO books(title, genre_id, shelf_id, description, "created_at", image)
         VALUES 
         ($1, (SELECT genres.id FROM genres WHERE genres.title=$2), (SELECT shelves.id FROM shelves WHERE shelves.title=$3), $4, $5, $6)
         RETURNING *`,
-        [title, genre_id, shelf_id, description, createdAt, image]
+        [title, genre, shelf, description, created_at, image]
       );
       if (newBook.rows.length > 0) {
         res.json(newBook.rows[0]);
       } else {
+        
         res
           .status(404)
           .send(`Book can't be created, error is: ${error.message}`);
@@ -74,15 +74,15 @@ class BooksControllers {
 
   async updateBook(req, res) {
     try {
-      const { title, genre_id, shelf_id, description, image, id } = req.body;
-      const updatedAt = new Date().toISOString();
+      const { title, genre, shelf, description, image, id } = req.body;
+      const updated_at = new Date().toISOString();
       const updatedBook = await db.query(
         `
         UPDATE books 
-        SET title=$1, genre_id=(SELECT id FROM genres WHERE title=$2), shelf_id=(SELECT id FROM shelves WHERE title=$3), description=$4, "updatedAt"=$5, image=$6
+        SET title=$1, genre_id=(SELECT id FROM genres WHERE title=$2), shelf_id=(SELECT id FROM shelves WHERE title=$3), description=$4, "updated_at"=$5, image=$6
         WHERE id=$7
         RETURNING *`,
-        [title, genre_id, shelf_id, description, updatedAt, image, id]
+        [title, genre, shelf, description, updated_at, image, id]
       );
       if (updatedBook.rows.length > 0) {
         res.json(updatedBook.rows[0]);

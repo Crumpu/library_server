@@ -13,7 +13,7 @@ Content-Type: application/json
 
 {
     "full_name": "Will Smith",
-    "email": "w-s@gmail.com",
+    "email": "w-1s@gmail.com",
     "phone": null, 
     "password": "password"
 }
@@ -23,8 +23,8 @@ Content-Type: application/json
 PUT http://127.0.0.1:5000/customers HTTP/1.1
 Content-Type: application/json
 
-{
-    "id": 1,
+{ 
+    "id": 13,
     "full_name": "Cavin McCalister",
     "email": "cmcc@gmail.com",
     "phone": 380660000000, 
@@ -34,4 +34,4 @@ Content-Type: application/json
 
 ###
 # deleteCustomer
-DELETE http://127.0.0.1:5000/customers/8
+DELETE http://127.0.0.1:5000/customers/13

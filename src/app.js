@@ -10,5 +10,6 @@ const {
 
 app.use(express.json());
 app.use(router);
+app.use(validationErrorHandler, errorHandler);
 
 module.exports = app;
